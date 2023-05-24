@@ -33,8 +33,49 @@
 			alert('XMLHttpRequset객체 생성 실패');
 		}
 	}
-		
+	/*
+	$.ajax({
+		type:'post',
+		url:url,
+		data:파라미터데이터,
+		success:function(res){
+			
+		},
+		error:function(err){
+			
+		}
+	})
+	*/
+	//jquery를 이용한 ajax
 	const getUserInfo=function(){
+		let phone=$('#phone').val();
+		let url='ajaxPizza?phone='+phone;
+		$.ajax({
+			type:'get',
+			url:url,
+			cache:false,
+			success:function(res){
+				//alert(res); //XMLDocument parsing하기
+				let name=$(res).find('name').text();
+				//alert(name);
+				let no=$(res).find('userNo').text();
+				let add=$(res).find('addr').text();
+				
+				let str="<h3 class='text-info'>회원번호:"+no+"</h3>"
+				str+="<h3 class='text-info'>회원이름:"+name+"</h3>"
+				str+="<h3 class='text-info'>회원주소:"+addr+"</h3>"
+				
+				$('#userInfo').html(str);
+			},
+			error:function(err){
+				alert('error: '+err.status);
+			}
+		})
+	}//------------
+	
+	
+	//함수_old:자바스크립트로 ajax요청을하는경우
+	const getUserInfo_old=function(){
 		if(request==null) init();	
 		//사용자가 입력한 전화번호 받아오기
 		let vphone=document.getElementById('phone').value;
@@ -44,11 +85,12 @@
 		request.onreadystatechange=updataPage//응답왔을때 호출할 콜백함수를 지정
 		request.send(null);//서버로 요청을 보내는 함수. get방식일때는 null을 전달	
 	}	
-	const updataPage=function(){
+	const updataPage_old=function(){
 		//alert(request.readyState+"/"+request.status)
 		if(request.readyState==4 && request.status==200){
 			//응답이 성공적으로 왔다면
 			let res=request.responseText;//xml로 응답을 받으면 responseXML속성을 이용
+			//let res=request.responseXML;
 			//alert(res);
 			let data=res.split("|");//구분자를 기준으로 쪼개면 token문자열을 배열에 담아 반환함
 			let userNo=data[0];
