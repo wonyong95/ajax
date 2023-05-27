@@ -1,6 +1,6 @@
 package com.multi.domain;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
 import lombok.Data;
 
@@ -10,6 +10,6 @@ public class BookVO {
 	private String title;
 	private String publish;
 	private int price;
-	private Timestamp published;
+	private Date published;
 	private String bimage;
 }

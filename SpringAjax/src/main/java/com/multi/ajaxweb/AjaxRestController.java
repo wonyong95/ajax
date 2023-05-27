@@ -1,16 +1,21 @@
 package com.multi.ajaxweb;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.multi.domain.BookVO;
 import com.multi.service.BookService;
+
+import lombok.extern.log4j.Log4j;
 
 /* Rest : Representational State Transfer의 약자
  * - 전송방식과 URI를 결합해서 원하는 작업을 지정하여 처리하도록 하는 방식
@@ -31,6 +36,7 @@ import com.multi.service.BookService;
 
 
 @RestController
+@Log4j
 public class AjaxRestController {
    
    @Inject
@@ -50,12 +56,25 @@ public class AjaxRestController {
       return mv;
    }
    
-   @GetMapping("/books")
+   @GetMapping(value="/books", produces="application/json")
    public List<BookVO> bookAll(){
-	   List<BookVO> arr=new ArrayList<>();
+	   List<BookVO> arr=bService.getAllBook();
 	   return arr;
    }
    
+   @GetMapping(value="/books/{isbn}",produces="application/json")
+   public BookVO bookInfo(@PathVariable("isbn") String isbn) {
+      log.info("isbn: "+isbn);
+      BookVO book = this.bService.getBookInfo(isbn);
+      return book;
+   }
+   
+   @PutMapping(value="/books/{isbn}", produces="application/json")
+   public ModelMap bookUpdate(@PathVariable("isbn") String isbn, @RequestBody BookVO vo) {
+	   log.info("isbn: "+isbn+", vo: "+vo);
+	   ModelMap map=new ModelMap("result","OK");
+	   return map;	
+   }
    
    
    

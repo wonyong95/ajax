@@ -2,22 +2,29 @@ package com.multi.service;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Service;
 
 import com.multi.domain.BookVO;
+import com.multi.mapper.BookMapper;
+
 @Service("bookService")
 public class BookServiceInImpl implements BookService {
-
+	
+	@Inject
+	private BookMapper bMapper;
+	
 	@Override
 	public List<BookVO> getAllBook() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.bMapper.getAllBook();
 	}
 
 	@Override
 	public BookVO getBookInfo(String isbn) {
 		// TODO Auto-generated method stub
-		return null;
+		return this.bMapper.getBookInfo(isbn);
 	}
 
 	@Override
