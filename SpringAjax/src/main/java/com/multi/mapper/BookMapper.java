@@ -11,4 +11,8 @@ public interface BookMapper {
 	int insertBook(BookVO book);
 	int updateBook(BookVO book);
 	int deleteBook(String isbn);
+	
+	List<BookVO> getPublishList();
+	List<BookVO> getTitleList(String publish);
+	List<BookVO> getFindBook(String title);
 }

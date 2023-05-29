@@ -5,10 +5,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -72,10 +74,33 @@ public class AjaxRestController {
    @PutMapping(value="/books/{isbn}", produces="application/json")
    public ModelMap bookUpdate(@PathVariable("isbn") String isbn, @RequestBody BookVO vo) {
 	   log.info("isbn: "+isbn+", vo: "+vo);
-	   ModelMap map=new ModelMap("result","OK");
+	   int n=this.bService.updateBook(vo);
+	   String str=(n>0)?"OK":"Fail";
+	   
+	   ModelMap map=new ModelMap("result",str);
 	   return map;	
    }
    
+   @DeleteMapping(value="/books/{isbn}", produces="application/json")
+   public ModelMap bookDelete(@PathVariable("isbn") String isbn) {
+	   log.info("isbn="+isbn);
+	   int n=bService.deleteBook(isbn);
+	   String str=(n>0)?"OK":"Fail";
+	   
+	   ModelMap map=new ModelMap("result", str);
+	   return map;
+   }
    
+   @GetMapping(value="/publishList",produces="application/json")
+   public List<BookVO> getPublishList(){
+	   List<BookVO> arr=bService.getPublishList();
+	   return arr;
+   }
+   
+   @GetMapping(value="titleList", produces="application/json")
+   public List<BookVO> getTitleList(@RequestParam("publish") String publish){
+	   
+	   return bService.getTitleList(publish);
+   }
    
 }

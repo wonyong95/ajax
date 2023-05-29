@@ -17,13 +17,13 @@ public class BookServiceInImpl implements BookService {
 	
 	@Override
 	public List<BookVO> getAllBook() {
-		// TODO Auto-generated method stub
+		
 		return this.bMapper.getAllBook();
 	}
 
 	@Override
 	public BookVO getBookInfo(String isbn) {
-		// TODO Auto-generated method stub
+		
 		return this.bMapper.getBookInfo(isbn);
 	}
 
@@ -34,15 +34,30 @@ public class BookServiceInImpl implements BookService {
 	}
 
 	@Override
-	public int updateBook(BookVO book) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updateBook(BookVO vo) {
+		
+		return bMapper.updateBook(vo);
 	}
 
 	@Override
 	public int deleteBook(String isbn) {
+		return bMapper.deleteBook(isbn);
+	}
+
+	@Override
+	public List<BookVO> getPublishList() {
+		return bMapper.getPublishList();
+	}
+
+	@Override
+	public List<BookVO> getTitleList(String publish) {
+		return bMapper.getTitleList(publish);
+	}
+
+	@Override
+	public List<BookVO> getFindBook(String title) {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 	
 }
