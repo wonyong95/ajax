@@ -21,6 +21,23 @@ select{
 #sel,#sel2{
 	margin:5px;
 }
+#lst1{
+	position:relative;
+	width:500px;
+	margin:0px;
+	border:1px solid silver;
+	background:#efefef;
+	color:blue;
+	left:65px;
+}
+#lst2{
+	margin:0;
+	padding:2px;
+
+}
+#lst2 ul li{
+	list-style:none;
+}
 </style>
 
 
@@ -30,6 +47,7 @@ select{
 		getAllBook();
 	});
 	//GET  /books :모든 도서정보가져오기
+	//GET  /books?keyword=도서명 : 검색한 도서정보 가져오기
 	//GET  /books/isbn번호 : 특정 도서정보 가져오기
 	//POST /books : 도서정보 등록
 	//PUT  /books/isbn번호 : 특정 도서정보 수정하기
@@ -94,6 +112,38 @@ select{
 			
 			$('#sel2').html(str);
 	}//----------------------------
+	
+	const bookInfo=function(vtitle){
+		
+		if(!vtitle){
+			vtitle=$('#books').val();//	키워드 입력값 가져오기
+			if(!vtitle){
+				alert('검색어를 입력하세요');
+				$('#books').focus();
+				return;
+			}
+		}
+		console.log('vtitle: '+vtitle);
+		//alert(encodeURIComponent(vtitle))
+		$.ajax({
+			type:'get',
+			url:'books?keyword='+encodeURIComponent(vtitle),
+			dataType:'json',
+			cache:false
+		})
+		.done((res)=>{
+			//alert(JSON.stringify(res))
+			showBooks(res);
+			if(res.length>0){
+			showBookInfo(res[0])
+			}else{
+				clearBookInfo();
+				}
+		})
+		.fail((err)=>{
+			alert(err.status)
+		})
+	}
 	
 	const goDel=function(visbn){
 		//alert(visbn);
@@ -160,13 +210,7 @@ select{
 			dataType:'json',
 			success:function(res){
 				//alert(JSON.stringify(res))
-				$('#isbn').val(res.isbn);
-				$('#title').val(res.title);
-				$('#publish').val(res.publish);
-				$('#price').val(res.price);
-				$('#published').val(res.published);
-				let str='<img src="resources/Upload/'+res.bimage+'" class="img img-thumbnail">'				
-				$('#bimage').html(str);
+				showBookInfo(res);
 			},
 			error:function(err){
 				alert(err.status);
@@ -174,6 +218,24 @@ select{
 		})
 	}//----------------------------
 	
+	const clearBookInfo=function(){
+		$('#isbn').val("");
+		$('#title').val("");
+		$('#publish').val("");
+		$('#price').val("");
+		$('#published').val("");
+		$('#bimage').html("");
+	}
+	
+	const showBookInfo=function(res){
+		$('#isbn').val(res.isbn);
+		$('#title').val(res.title);
+		$('#publish').val(res.publish);
+		$('#price').val(res.price);
+		$('#published').val(res.published);
+		let str='<img src="resources/Upload/'+res.bimage+'" class="img img-thumbnail">'				
+		$('#bimage').html(str);
+	}
 	
 	const getAllBook=function(){
 		$.ajax({
@@ -219,6 +281,38 @@ select{
 			str+='</table>';
 		$('#book_data').html(str);
 	}//-------------------------------
+	const autoComp=function(val){
+		//console.log('val: '+val);
+		$.ajax({
+			type:'post',
+			url:'autoComp',
+			data:'keyword='+val,
+			dataType:'json',
+			cache:false
+		})
+		.done((res)=>{
+			console.log(JSON.stringify(res))
+			let str='<ul>';
+			$.each(res, function(i, title){
+				str+='<li><a href="#" onclick="setting(\''+title+'\')">';
+				str+=title;
+				str+='</li>';
+			})
+			str+='</ul>';
+			
+			$('#lst2').html(str).show('slow');
+			$('#lst1').show('slow')
+		})
+		.fail((err)=>{
+			alert(err.status);
+		})
+	}
+	
+	const setting=function(val){
+		$('#books').val(val);
+		$('#lst2').hide();
+		$('#lst1').hide();
+	}
 	
 </script>
 </head>
@@ -240,10 +334,8 @@ select{
 	 onkeyup="autoComp(this.value)"
 	 class="form-control" >
 	 <!-- ---------------------------- -->
-	 <div id="lst1" class="listbox"
-	  style="display:none">
-	 	<div id="lst2" class="blist"
-	 	 style="display:none">
+	 <div id="lst1" class="listbox" style="display:none">
+	 	<div id="lst2" class="blist" style="display:none">
 	 	</div>
 	 </div>
 	 <!-- ---------------------------- -->
@@ -253,10 +345,11 @@ select{
 <div>
  
  <button type="button"
-  onclick="getBook()"
+  onclick="bookInfo('')"
   class="btn btn-primary">검색</button>
  
  <button type="button" onclick="getAllBook()" class="btn btn-success">모두보기</button>
+ 
  <button type="button" id="openBtn"
   class="btn btn-info">OPEN API에서 검색</button><br><br>
 </div>

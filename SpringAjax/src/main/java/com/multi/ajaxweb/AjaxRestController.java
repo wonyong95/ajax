@@ -8,6 +8,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,8 +60,17 @@ public class AjaxRestController {
    }
    
    @GetMapping(value="/books", produces="application/json")
-   public List<BookVO> bookAll(){
-	   List<BookVO> arr=bService.getAllBook();
+   public List<BookVO> bookAll(@RequestParam(defaultValue="") String keyword){
+	   log.info("keyword=="+keyword);
+	   
+	   List<BookVO> arr=null;
+	   if(keyword.isEmpty()) {//keyword가 없다면 모든 도서정보 가져오기
+		    arr=bService.getAllBook();
+	   }else {
+		   //검색한 도서정보 가져오기
+		   arr=bService.getFindBook(keyword);
+	   }
+	   
 	   return arr;
    }
    
@@ -97,10 +107,17 @@ public class AjaxRestController {
 	   return arr;
    }
    
-   @GetMapping(value="titleList", produces="application/json")
+   @GetMapping(value="/titleList", produces="application/json")
    public List<BookVO> getTitleList(@RequestParam("publish") String publish){
 	   
 	   return bService.getTitleList(publish);
+   }
+   
+   @PostMapping(value="/autoComp", produces="application/json")
+   public List<String> getAutoComplete(@RequestParam(defaultValue="") String keyword){
+	   log.info("keyword: "+keyword);
+	   
+	   return bService.getAutoComplete(keyword);
    }
    
 }
