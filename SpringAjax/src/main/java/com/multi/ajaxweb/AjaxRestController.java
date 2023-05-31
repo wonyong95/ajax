@@ -120,4 +120,12 @@ public class AjaxRestController {
 	   return bService.getAutoComplete(keyword);
    }
    
+   @GetMapping(value="openApi")
+   public ModelAndView bookNaverFind() {
+	   
+	   ModelAndView mv=new ModelAndView();
+	   mv.setViewName("ajax/openApi");
+	   return mv;
+   }
+   
 }
