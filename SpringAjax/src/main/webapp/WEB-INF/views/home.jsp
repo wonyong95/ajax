@@ -153,6 +153,8 @@
    <button id="btn1">ajax(VO)-json</button>
    <button id="btn2">ajax(List)-json(기존 파라미터 형식으로 데이터보내기)</button>
    <button id="btn3">ajax(List)-json(형태의 파라미터 데이터보내기)</button>
+   <button onclick="location.href='book'">Ajax Book</button>
+   <button onclick="location.href='openApi'">Naver open Api</button>
    <hr>
    		<h3>Ajax 파일업로드</h3>
    		<form id="frm" method="post" enctype="multipart/form-data">

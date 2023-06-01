@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.multi.domain.BookNaverProxy;
 import com.multi.domain.BookVO;
 import com.multi.service.BookService;
 
@@ -126,6 +127,16 @@ public class AjaxRestController {
 	   ModelAndView mv=new ModelAndView();
 	   mv.setViewName("ajax/openApi");
 	   return mv;
+   }
+   
+   @GetMapping(value="openApiResult", produces="application/json; charset=UTF-8")
+   public String bookNaverResult(@RequestParam(defaultValue="") String query,
+		   @RequestParam(defaultValue="20") String display,
+		   @RequestParam(defaultValue="1") String start) throws Exception {
+	   BookNaverProxy proxy=new BookNaverProxy();
+	   String response=proxy.getNaverBook(query, start, display);
+	   
+	   return response;
    }
    
 }
