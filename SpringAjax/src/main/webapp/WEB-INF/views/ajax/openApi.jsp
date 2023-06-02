@@ -22,6 +22,7 @@
 				$('input[name="book"]').focus();
 				return;
 			}
+			
 			let url='openApiResult?query='+encodeURIComponent(keyword)+"&dispaly=20&start=1";	
 			send(url,keyword, 1);
 				
@@ -71,27 +72,68 @@
 	}//list
 	
 	function showPage(total, keyword, display, cpage){
-		if(total>200){
+		/* if(total>200){
 			total=200;
-		}
+		} */
 		//페이지 수
 		//pageCount=(total-1)/display+1 <==자바 int/int/int =>정수형
 		//let pageCount=Math.floor((total-1)/display+1); //<=자바스크립트 실수형
 		let pageCount=Math.ceil(total/display);
 		
 		//alert(pageCount);
+		/*
+		i==cpage   display     start
+		1		20			1
+		2		20			21
+		3		20			41
+		...
+		
+		start= (i-1)*display+1
+		*/
+		let pageBlock=10;
+		let prevBlock=Math.floor((cpage-1)/pageBlock)*pageBlock;//이전블럭 (이전10개)
+		let nextBlock=prevBlock+(pageBlock+1);
+		console.log('pageCount: '+pageCount+", prevBlock: "+prevBlock+", nextBlock: "+nextBlock);
+		
 		let str='<ul class="pagination">';
-		for(let i=1;i<=pageCount;i++){
+		
+		if(prevBlock>0){
+			let start=(prevBlock-1)*display+1;
+
 			str+='<li>';
-			str+='<a>';
+			str+='<a href="#" onclick="fetch(\''+ keyword+'\','+start+','+prevBlock+')">';
+			str+='Prev';
+			str+='</a>';
+			str+='</li>';
+		}
+		//for(let i=1;i<=pageCount;i++){
+		for(let i=prevBlock+1;i<=nextBlock-1 && i<=pageCount; i++){
+			let start=(i-1)*display+1;
+			str+='<li>';
+			str+='<a href="#" onclick="fetch(\''+ keyword+'\','+start+','+i+')">';
 			str+=i;
 			str+='</a>';
 			str+='</li>';
 		}
+		if(nextBlock<=pageCount){
+			let start=(nextBlock-1)*display+1;
+			str+='<li>';
+			str+='<a href="#" onclick="fetch(\''+ keyword+'\','+start+','+nextBlock+')">';
+			str+='Next';
+			str+='</a>';
+			str+='</li>';
+		}
+		
 		str+='</ul>';
 		$('#paging').html(str);
 		
 	}//page
+	
+	function fetch(query, start, cpage){
+		//alert(query+"/"+start"/"+cpage);
+		let url='openApiResult?query='+encodeURIComponent(query)+"&dispaly=20&start="+start;
+		send(url,query,cpage);
+	}
 	
 	function test(){
 		//자바스크립트 cors 정책에 위배되어 네트워크 통신 불가능
